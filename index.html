@@ -30,7 +30,7 @@
             startTime = Date.now();                                                            // Enregistre l'heure de début
             interval = setInterval(function() {
                 let elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-                timerElement.textContent = `Chrono : ${elapsedTime}s`;                           // Affiche le temps écoulé en secondes
+                timerElement.textContent = `Chrono : ${elapsedTime}s`;                         // Affiche le temps écoulé en secondes
             }, 1000);
         }
 

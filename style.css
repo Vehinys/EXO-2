@@ -1,0 +1,74 @@
+body{
+    background-image: url("image/6757291.jpg");
+    background-size: 1700px;
+    margin: 0 150px 0 150px;
+}
+
+#board {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 30px 0 ;
+}
+
+.box {
+    width: 90px;
+    height: 70px;
+    border: 1px solid yellow;
+    background-color: rgb(241, 57, 158);
+    font-size: 3em;
+    font-weight: 900;
+    text-align: center;
+    line-height: 75px;
+    margin: 5px;
+    animation: appear 0.5s;
+    color : white;
+    border-radius: 6px;
+    cursor:pointer;
+    transition: background-color 0.8s, color 0.8s,transform 0.8s;
+    -webkit-box-shadow: 0px 10px 13px -7px #000000, 13px 14px 19px 2px rgba(0,0,0,0.37); 
+    box-shadow: 0px 10px 13px -7px #000000, 13px 14px 19px 2px rgba(0,0,0,0.37);
+}
+
+.box-valid {
+    background-color: rgb(144, 0, 201);
+    color : white;
+    transform: scale(1);
+}
+
+.box.error  { color:rgb(233, 27, 27); background-color:rgb(0, 0, 0);}
+.box.success{ color:rgb(255, 255, 255); background-color:rgb(0, 201, 67);}
+.box.notice { color:rgb(255, 255, 255); background-color:rgb(4, 50, 102); cursor: not-allowed;}
+
+@keyframes appear {
+    from {
+        transform: scale(0) rotate(180deg);
+    }
+    to{
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+#timer{
+    color : black;
+    text-align: center;
+    font-weight: 900;
+    font-size: 40px;
+    margin: 150px 0 30px 0 ;
+    text-decoration: underline;
+}
+
+#scoreboard h2{
+    margin : 0;
+    text-align: center;
+    font-size: 40px;
+    color : black;
+    text-decoration: underline;
+}
+
+ul#scores{
+    text-align: center;
+    font-size: 30px;
+    list-style: none;
+    color : black;
+}

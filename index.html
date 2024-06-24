@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    
+    
+    <div id="timer">Chrono : 0s</div>                                                          <!-- Affichage du timer -->
+    <div id="board"></div>                                                                     <!-- Zone de jeu -->
+    <div id="scoreboard">                                                                      <!-- Affichage du timer -->
+        <h2>Scoreboard</h2>
+        <ul id="scores"></ul>                                                                  <!-- Liste des meilleurs scores -->
+    </div>
+
+    <script>
+        let timerElement = document.getElementById("timer");
+        let scoresElement = document.getElementById("scores");
+        let startTime, interval;
+        let bestScores = [];
+        let numberBox;
+        let nb;
+
+        function startTimer() {                                                                // Fonction pour démarrer le timer
+            startTime = Date.now();                                                            // Enregistre l'heure de début
+            interval = setInterval(function() {
+                let elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                timerElement.textContent = `Chrono : ${elapsedTime}s`;                           // Affiche le temps écoulé en secondes
+            }, 1000);
+        }
+
+        function stopTimer() {                                                                 // Fonction pour arrêter le timer
+            clearInterval(interval);                                                           // Arrête l'intervalle du timer
+            let elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+            updateScores(numberBox, elapsedTime);                                              // Met à jour le tableau des scores avec le temps écoulé
+        }
+
+        function updateScores(boxCount, time) {                                                // Fonction pour mettre à jour les meilleurs scores
+            bestScores.push({ boxCount, time });
+            bestScores.sort((a, b) => a.time - b.time);                                        // Trie les scores par ordre croissant de temps
+            if (bestScores.length > 5) {
+                bestScores.pop();                                                              // Garde uniquement les 5 meilleurs scores
+            }
+            renderScores();                                                                    // Met à jour l'affichage du tableau des scores
+        }
+
+        
+        function renderScores() {                                                              // Fonction pour afficher les meilleurs scores
+            scoresElement.innerHTML = "";                                                      // Réinitialise l'affichage des scores
+            bestScores.forEach((score, index) => {
+                let li = document.createElement("li");
+                li.textContent = `Tu es #${index + 1} : en ${score.time}s avec ${score.boxCount} Boxe(s)`;   // Affiche chaque score avec son rang et le nombre de boîtes
+                scoresElement.appendChild(li);
+            });
+        }
+
+        function shuffleChildren(parent) {                                                     // Fonction pour mélanger les enfants d'un élément parent (boîtes) 
+            let children = parent.children;
+            let i = board.children.length, k, temp;
+            while (--i > 0) {
+                k = Math.floor(Math.random() * (i + 1));
+                temp = board.children[k];
+                board.children[k] = board.children[i];
+                board.appendChild(temp);
+            }
+        }
+
+        function showReaction(type, clickebox) {                                               // Fonction pour montrer une réaction (succès, erreur, notice) lors du clic sur une boîte
+            clickebox.classList.add(type);
+            if (type !== "success") {
+                setTimeout(function() {
+                    clickebox.classList.remove(type);
+                }, 800);
+            }
+        }
+
+
+        function initGame() {                                                                  // Fonction pour initialiser le jeu
+            numberBox = parseInt(prompt("ENTRE UN NOMBRE ALEATOIRE :", ""));                   // Demande à l'utilisateur d'entrer un nombre pour générer les boîtes
+            const board = document.querySelector("#board");
+            board.innerHTML = "";                                                              // Efface le plateau de jeu précédent
+            const box = document.createElement("div");
+            box.classList.add("box");
+
+            nb = 1;                                                                            // Variable pour suivre le numéro de la boîte correcte à cliquer
+
+            for (let i = nb; i <= numberBox; i++) {                                            // Génération des boîtes en fonction du nombre entré par l'utilisateur
+                let newbox = box.cloneNode();                                                  // Clonage de la boîte modèle
+                newbox.innerText = i;                                                          // Numérotation des boîtes
+                board.appendChild(newbox);                                                     // Ajout des boîtes au plateau de jeu
+                newbox.addEventListener("click", function() {
+                    if (i == nb) {
+                        newbox.classList.add("box-valid");                                     // Marque la boîte comme valide
+                        if (nb == board.children.length) {
+                            board.querySelectorAll(".box").forEach(function(box) {
+                                showReaction("success", box);                                  // Affiche la réaction de succès
+                            });
+                            stopTimer();                                                       // Arrête le timer lorsque toutes les boîtes sont sélectionnées
+                            setTimeout(initGame, 1000);                                        // Relance le jeu après 2 secondes
+                        }
+                        nb++;
+                        shuffleChildren(board);                                                // Mélange les boîtes restantes
+                    } else if (i > nb) {
+                        showReaction("error", newbox);                                         // Affiche la réaction d'erreur
+                        nb = 1;
+                        board.querySelectorAll(".box-valid").forEach(function(validBox) {
+                            validBox.classList.remove("box-valid");
+                        });
+                        shuffleChildren(board);                                                // Mélange les boîtes après une erreur
+                    } else {
+                        showReaction("notice", newbox);                                        // Affiche une réaction de notification
+                    }
+                });
+            }
+
+            shuffleChildren(board);                                                            // Mélange initial des boîtes
+            startTimer();                                                                      // Démarre le timer dès que le jeu commence
+        }
+
+        initGame();                                                                            // Démarre le jeu initial
+
+    </script>
+
+</body>
+
+</html>
